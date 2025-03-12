@@ -5,22 +5,24 @@ import (
 	"math/rand/v2"
 )
 
-/* Неправильный вариант потому что невозможно протестировать
 func main() {
-	Строки неизменяемы
-	str := "Привет"
-	str[2] = 'e'
-	fmt.Println(str)
-}*/
-
-// Правильный вариант
+	mock := &mockCharGenerator{}
+	real := &realCharGenerator{}
+	
+	for i := 5; i < 26; i++ {
+		fmt.Printf("Length %d:\n", i)
+                password := generatePassword(i, real)
+	        fmt.Println("\tReal: %d\n"password)
+		password = generatePassword(i, mock)
+	        fmt.Println("\tMock: %d\n\n"password)
+	}
+}
 
 type iCharGenerator interface {
 	generate() rune
 }
 
-// "Боевая" реализация
-const alowedRunes [72]rune = [72]rune {
+var allowedRunes [62]rune = [62]rune {
 	'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
 	'v', 'w', 'x', 'y', 'z',
 
@@ -31,17 +33,20 @@ const alowedRunes [72]rune = [72]rune {
 }
 type realCharGenerator struct { }
 func (generator *realCharGenerator) generate() rune {
-	return alowedRunes[rand.IntN(72)]
+	return alowedRunes[rand.IntN(62)]
 }
 
-// "Моковая" реализация для тестов
-type realCharGenerator struct {
-
+type mockCharGenerator struct { }
+func (generator *mockCharGenerator) generate() rune {
+	return '0'
 }
-func 
 
-func generatePassword(length int, charGenerator iCharGenerator) {
-	str := []rune("Привет")
-	str[2] = 'e'
-	fmt.Println(string(str))
+func generatePassword(length int, charGenerator iCharGenerator) string {
+	password := make([]rune, length)
+	
+	for i := 0; i < length; i++ {
+		password[i] = charGenerator.generate();
+	}
+
+	return string(password)
 }
